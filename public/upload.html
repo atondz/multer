@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload File - Test Multiple</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .upload-container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    h1 {
+      color: #333;
+    }
+    input[type="file"] {
+      display: block;
+      margin: 15px auto;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 10px;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .result {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="upload-container">
+    <h1>Upload File - Test Single & Multiple</h1>
+    <form action="/upload-single" method="POST" enctype="multipart/form-data">
+      <h3>Upload một file</h3>
+      <input type="file" name="singleFile" required />
+      <button type="submit">Upload File</button>
+    </form>
+
+    <form action="/upload-multiple" method="POST" enctype="multipart/form-data">
+      <h3>Upload nhiều file</h3>
+      <input type="file" name="multiFiles" multiple required />
+      <button type="submit">Upload Files</button>
+    </form>
+
+    <div class="result">
+      <h4>Danh sách file đã upload:</h4>
+      <ul id="fileList"></ul>
+    </div>
+  </div>
+
+  <script>
+    // Hàm lấy danh sách file đã upload và hiển thị lên UI
+    async function fetchUploadedFiles() {
+      const res = await fetch('/uploaded-files');
+      const files = await res.json();
+      const fileList = document.getElementById('fileList');
+      fileList.innerHTML = '';
+      files.forEach(file => {
+        const li = document.createElement('li');
+        li.textContent = file;
+
+        // Tạo nút tải xuống
+        const downloadButton = document.createElement('a');
+        downloadButton.href = `/download/${file}`;
+        downloadButton.textContent = 'Tải xuống';
+        downloadButton.style.marginLeft = '10px';
+        downloadButton.style.color = 'blue';
+        downloadButton.style.textDecoration = 'underline';
+
+        li.appendChild(downloadButton);
+        fileList.appendChild(li);
+      });
+    }
+
+    // Lấy danh sách file ngay khi tải trang
+    fetchUploadedFiles();
+  </script>
+</body>
+</html>
